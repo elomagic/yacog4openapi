@@ -1,0 +1,24 @@
+{
+    "template": "resources/delphi-unit.jinja2",
+    "output": "..\\out\\uRestServiceClient.pas",
+    "datatype-map": {
+        "number,float":  "Single",
+        "number,double": "Double",
+        "number,": "Single",
+
+        "integer,in32": "Integer",
+        "integer,int64": "Int64",
+        "integer,": "Integer",
+
+        "string,byte": "String",
+        "string,binary": "String",
+        "string,": "String",
+
+        "string,date": "TDate",
+        "string,date-time": "TDateTime",
+
+        "string,uuid": "String",
+
+        "boolean,": "Boolean"
+    }
+}

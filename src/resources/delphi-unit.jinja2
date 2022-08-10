@@ -1,0 +1,48 @@
+{#- Project https://github.com/yacog4openapi                                                    -#}
+{#- See https://jinja.palletsprojects.com/en/3.1.x/ for supported features                      -#}
+{#- Custom Filters:                                                                             -#}
+{#-   camelcase         - Translate string to camel case string                                 -#}
+{#-   rightpad(lenght)  - Add empty spaces to the right of the string with max length it all    -#}
+// ****************************************************************************
+// Some sample header
+// ****************************************************************************
+
+// unit {};
+
+interface
+{% if info.title is defined %}
+// {{ info.title }}{% endif %}
+{%- if info.description is defined %}
+// Description {{ info.description }}{% endif %}
+{%- if info.version is defined %}
+// API Version {{ info.version }}{% endif %}
+{%- if info.license.name is defined %}
+// License {{ info.license.name }}{% endif %}
+// This unit is generated code of an OpenApi definition file
+
+type
+{%- for enum in enum_types %}
+{%- if enum.description is defined %}
+  // {{ enum.description }}{% endif %}
+  T{{ enum.name|camelcase }}Type = ({{ enum.enum|join(', ') }});
+{%- endfor %}
+{% for dto in dto_types %}
+{%- if dto.description is defined %}
+  // {{ dto.description }}{% endif %}
+  TM{{ dto.name|camelcase }} = class(TMBaseDto)
+  public
+{%- for field in dto.fields %}
+{%- if field.description is defined %}
+    // {{ field.description }}{% endif %}
+    {{ field.name }}: {% if field.ref is defined %}TM{{ field.datatype|camelcase }};{% elif field.type=='array' %}abc{% else %}{{ field.datatype }} {% endif %}
+{%- endfor %}
+  end;
+{% endfor %}
+
+implementation
+
+initialization
+
+finalization
+
+end.

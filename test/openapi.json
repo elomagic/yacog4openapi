@@ -1,0 +1,824 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Weather Microservice API",
+    "description" : "Simple DYI weather service API",
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version" : "0.0"
+  },
+  "paths" : {
+    "/meta" : {
+      "get" : {
+        "operationId" : "getMeta",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/rest/apiKey" : {
+      "get" : {
+        "summary" : "Returns a list of found API keys",
+        "operationId" : "getApiKeys",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "pageSize",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Response a list of found DTOs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ApiKey"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a API key",
+        "operationId" : "createApiKey",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ApiKey"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "API key created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateApiKeyResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid payload given"
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      }
+    },
+    "/rest/apiKey/{uid}" : {
+      "delete" : {
+        "summary" : "Delete a API key",
+        "operationId" : "deleteApiKey",
+        "parameters" : [ {
+          "name" : "uid",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "API key deleted"
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      }
+    },
+    "/rest/measure" : {
+      "get" : {
+        "summary" : "Query measurements of a sensor/bot",
+        "operationId" : "getData",
+        "parameters" : [ {
+          "name" : "Weather-Client-API-Key",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "sensorUid",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "startTime",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "endTime",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "latest",
+          "in" : "query",
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        }, {
+          "name" : "metric",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "description" : "Enumeration of supported metrics of an sensor",
+            "default" : "TEMPERATURE",
+            "enum" : [ "TEMPERATURE", "PRESSURE", "HUMIDITY", "BATTERY_VOLTAGE" ]
+          }
+        }, {
+          "name" : "unit",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "description" : "Enumeration of supported units",
+            "enum" : [ "DEGREES_CELSIUS", "DEGREES_FAHRENHEIT", "DEGREES_KELVIN", "PRESSURE_HECTOPASCAL", "PERCENT", "VOLTAGE" ]
+          }
+        }, {
+          "name" : "detailed",
+          "in" : "query",
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "pageSize",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Response a set of found measurements",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Measure"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request is not authorized"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Upload a set of measurements",
+        "operationId" : "createMeasurement",
+        "parameters" : [ {
+          "name" : "Weather-Client-API-Key",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MeasureWide"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response currently nothing"
+          },
+          "401" : {
+            "description" : "Request is not authorized"
+          },
+          "404" : {
+            "description" : "Sensor/Bot UID is unknown"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      }
+    },
+    "/rest/ota/update" : {
+      "get" : {
+        "operationId" : "getUpdatableFiles",
+        "parameters" : [ {
+          "name" : "Weather-Client-API-Key",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/rest/ota/update/{file}" : {
+      "get" : {
+        "operationId" : "getFile",
+        "parameters" : [ {
+          "name" : "Weather-Client-API-Key",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "file",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/octet-stream" : { }
+            }
+          }
+        }
+      }
+    },
+    "/rest/sensor" : {
+      "get" : {
+        "summary" : "Returns a list of found sensors/bots",
+        "operationId" : "getSensors",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "pageSize",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Response a list of found DTOs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Sensor"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Updates a sensor/bot",
+        "operationId" : "updateSensor",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Sensor"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Sensor/Bot updated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Sensor"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "404" : {
+            "description" : "Sensor/Bot not found"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Register/Creates a new sensor/bot",
+        "operationId" : "registerSensor",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Sensor"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Sensor/Bot created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Sensor"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid payload"
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "429" : {
+            "description" : "Too many requests"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      }
+    },
+    "/rest/sensor/{sensorUid}" : {
+      "get" : {
+        "summary" : "Find a sensor/bot",
+        "operationId" : "getSensor",
+        "parameters" : [ {
+          "name" : "sensorUid",
+          "in" : "path",
+          "description" : "UUID of the sensor",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Response DTO",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Sensor"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "404" : {
+            "description" : "Sensor/Bot not found"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      }
+    },
+    "/rest/user" : {
+      "get" : {
+        "summary" : "Returns a list of found users",
+        "operationId" : "findUsers",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "pageSize",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Response a list of found DTOs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/UserAccount"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Creates a new user account",
+        "operationId" : "createUser",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateUserAccount"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "User account created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserAccount"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "409" : {
+            "description" : "User already exist"
+          },
+          "429" : {
+            "description" : "Too many requests"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      }
+    },
+    "/rest/user/{username}" : {
+      "get" : {
+        "summary" : "Search for a user account",
+        "operationId" : "getUser",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Response found user",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserAccount"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Request not authorized"
+          },
+          "404" : {
+            "description" : "User not found"
+          },
+          "500" : {
+            "description" : "Internal error occurred"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ApiKey" : {
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "modifiedOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "notAfter" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "uid" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "description" : "Application API Key"
+      },
+      "CreateApiKeyResponse" : {
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "key" : {
+            "type" : "string"
+          },
+          "modifiedOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "notAfter" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "uid" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "CreateUserAccount" : {
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "lastActivity" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "mailAddress" : {
+            "type" : "string"
+          },
+          "modifiedOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "roles" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "Enumeration of supported user roles",
+              "enum" : [ "CreateApiKey", "DeleteApiKey", "ReadApiKey", "ReadMeasures", "ReadUsers", "ReadSensor", "CreateSensor", "UpdateSensor", "CreateUser", "UpdateUserRoles" ]
+            }
+          },
+          "uid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "verificationTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "Location" : {
+        "type" : "object",
+        "properties" : {
+          "latitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "longitude" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        },
+        "description" : "Geo location of the sensor"
+      },
+      "Measure" : {
+        "type" : "object",
+        "properties" : {
+          "metric" : {
+            "type" : "string",
+            "description" : "Enumeration of supported metrics of an sensor",
+            "enum" : [ "TEMPERATURE", "PRESSURE", "HUMIDITY", "BATTERY_VOLTAGE" ]
+          },
+          "sensorUid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "unit" : {
+            "type" : "string",
+            "description" : "Enumeration of supported units",
+            "enum" : [ "DEGREES_CELSIUS", "DEGREES_FAHRENHEIT", "DEGREES_KELVIN", "PRESSURE_HECTOPASCAL", "PERCENT", "VOLTAGE" ]
+          },
+          "unixEpochTimestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "value" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        },
+        "description" : "Measured values"
+      },
+      "MeasureWide" : {
+        "type" : "object",
+        "properties" : {
+          "batteryVoltage" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "humidity" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "pressure" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "pressureUnit" : {
+            "type" : "string"
+          },
+          "sensorUid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "temperature" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "temperatureUnit" : {
+            "type" : "string"
+          },
+          "unixEpochTimestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Sensor" : {
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/Location"
+          },
+          "modifiedOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Enumeration of supported sensor status",
+            "enum" : [ "ENABLED", "DISABLED", "FAILURE" ]
+          },
+          "uid" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "UserAccount" : {
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "lastActivity" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "mailAddress" : {
+            "type" : "string"
+          },
+          "modifiedOn" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "uid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "verificationTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      }
+    }
+  }
+}
