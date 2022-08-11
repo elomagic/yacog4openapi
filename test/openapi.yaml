@@ -43,6 +43,8 @@ paths:
           description: Request not authorized
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
     post:
       summary: Create a API key
       operationId: createApiKey
@@ -64,6 +66,8 @@ paths:
           description: Request not authorized
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
   /rest/apiKey/{uid}:
     delete:
       summary: Delete a API key
@@ -81,6 +85,8 @@ paths:
           description: Request not authorized
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
   /rest/measure:
     get:
       summary: Query measurements of a sensor/bot
@@ -159,6 +165,8 @@ paths:
           description: Request is not authorized
         "500":
           description: Internal error occurred
+      security:
+        - ApiKeyAuth: []
     post:
       summary: Upload a set of measurements
       operationId: createMeasurement
@@ -181,6 +189,8 @@ paths:
           description: Sensor/Bot UID is unknown
         "500":
           description: Internal error occurred
+      security:
+        - ApiKeyAuth: []
   /rest/ota/update:
     get:
       operationId: getUpdatableFiles
@@ -194,6 +204,8 @@ paths:
           description: default response
           content:
             application/json: {}
+      security:
+        - ApiKeyAuth: []
   /rest/ota/update/{file}:
     get:
       operationId: getFile
@@ -212,6 +224,8 @@ paths:
           description: default response
           content:
             application/octet-stream: {}
+      security:
+        - ApiKeyAuth: []
   /rest/sensor:
     get:
       summary: Returns a list of found sensors/bots
@@ -240,6 +254,8 @@ paths:
           description: Request not authorized
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
     put:
       summary: Updates a sensor/bot
       operationId: updateSensor
@@ -261,6 +277,8 @@ paths:
           description: Sensor/Bot not found
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
     post:
       summary: Register/Creates a new sensor/bot
       operationId: registerSensor
@@ -284,6 +302,8 @@ paths:
           description: Too many requests
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
   /rest/sensor/{sensorUid}:
     get:
       summary: Find a sensor/bot
@@ -309,6 +329,8 @@ paths:
           description: Sensor/Bot not found
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
   /rest/user:
     get:
       summary: Returns a list of found users
@@ -341,6 +363,8 @@ paths:
           description: Request not authorized
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
     post:
       summary: Creates a new user account
       operationId: createUser
@@ -364,6 +388,8 @@ paths:
           description: Too many requests
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
   /rest/user/{username}:
     get:
       summary: Search for a user account
@@ -387,6 +413,8 @@ paths:
           description: User not found
         "500":
           description: Internal error occurred
+      security:
+        - BasicAuth: []
 components:
   schemas:
     ApiKey:
@@ -586,3 +614,10 @@ components:
         verificationTime:
           type: string
           format: date-time
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Weather-Client-API-Key
+      in: header
+    BasicAuth:
+      type: http
