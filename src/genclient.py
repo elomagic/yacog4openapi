@@ -24,6 +24,8 @@ identified_info = {}
 
 def load_configuration(filename: str) -> None:
     global configuration
+
+    print(f'Loading configuration \'{filename}\'')
     with open(filename) as f:
         configuration = json.load(f)
 
@@ -39,9 +41,25 @@ def load_openapi_file(source: str) -> dict:
 
 
 @click.command()
-@click.option("--source", help="OpenAPI source file")
-def gen_code(source: str):
+@click.option("--source", help="OpenAPI source file (File and https are supported)")
+@click.option("--template", default=None, help="Template file to generate an output file")
+@click.option("--output", default=None, help="Name of the generated output file")
+def gen_code(source: str, template: str, output: str):
     global identified_info
+    global configuration
+
+    configuration_filename = os.path.join(os.path.dirname(__file__), 'configuration.json')
+    load_configuration(configuration_filename)
+
+    if template is None:
+        template = configuration['template']
+
+    if output is None:
+        output = configuration['output']
+
+    print(f'Using source file: {source}')
+    print(f'Using template file: {template}')
+    print(f'Using output file: {output}')
 
     open_api: dict = load_openapi_file(source)
 
@@ -58,7 +76,9 @@ def gen_code(source: str):
 
     identified_info = open_api['info']
 
-    process_templates()
+    output_content = process_template(template)
+
+    write_output(output, output_content)
 
 
 def collect_enums(components: dict) -> None:
@@ -95,9 +115,10 @@ def collect_dtos(components: dict) -> None:
         identified_dtos.append(dto)
 
 
-def process_templates() -> None:
-
-    process_template(configuration['template'], configuration['output'])
+def write_output(target_file: str, content: str) -> None:
+    print(f'Writing rendered output to {target_file}')
+    with open(target_file, 'w') as f:
+        f.write(content)
 
 
 def map_datatype(items: dict) -> str:
@@ -126,7 +147,7 @@ def map_datatype(items: dict) -> str:
     return ''
 
 
-def process_template(template_file: str, output: str) -> None:
+def process_template(template_file: str) -> str:
     global identified_info
     global identified_dtos
     global identified_enums
@@ -146,13 +167,8 @@ def process_template(template_file: str, output: str) -> None:
     template = env.get_template(os.path.basename(template_file))
     print(f'Processing template {template}')
 
-    render_output = template.render(enum_types=identified_enums, dto_types=identified_dtos, info=identified_info)
-
-    print(f'Writing rendered output to {output}')
-    with open(output, 'w') as f:
-        f.write(render_output)
+    return template.render(enum_types=identified_enums, dto_types=identified_dtos, info=identified_info)
 
 
 if __name__ == '__main__':
-    load_configuration('configuration.json')
     gen_code()

@@ -1,6 +1,7 @@
 # Yast Another Code Generator Tool 4 OpenAPI
 
-Currently prototype status
+Currently, prototype status
+
 ---
 
 [![GitHub tag](https://img.shields.io/github/tag/elomagic/yacog4openapi.svg)](https://github.com/elomagic/yacog4openapi/tags/)
@@ -12,9 +13,20 @@ Currently prototype status
 
 ## Table of Contents
 
+- [What about?](#what-about?)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Using](#using)
+- [Contribution](#contribution)
+
+# What About?
+
+This project is currently a small prototype project how to read an Open API file and use a template engine in Python. 
+
 # Installation
 
-Install required dependencies
+All required Python dependencies are declared in the *requirement.txt* file and must be installed with the following 
+command by using the Python package manager *Pip*: 
 
 ```shell
 pip install -r requirements.txt
@@ -22,10 +34,47 @@ pip install -r requirements.txt
 
 # Configuration
 
-tbd
+```json5
+{
+    // Template to use
+    "template": "resources/delphi-unit.jinja2",
+    // File generated output
+    "output": "..\\out\\uRestServiceClient.pas",
+    // Open API datatype mappings
+    "datatype-map": {
+        "number,float":  "Single",
+        "number,double": "Double",
+        "number,": "Single",
+
+        "integer,in32": "Integer",
+        "integer,int64": "Int64",
+        "integer,": "Integer",
+
+        "string,byte": "String",
+        "string,binary": "String",
+        "string,": "String",
+
+        "string,date": "TDate",
+        "string,date-time": "TDateTime",
+
+        "string,uuid": "String",
+
+        "boolean,": "Boolean"
+    }
+}
+```
+
+tbc
 
 # Using
 
+**Example**
 ```shell
-src/genclient.py --source=test/openapi.json
+src/genclient.py --source=test/openapi.json --template=test/delphi-test.jinja2 --output=test-output/delphi-unit.pas
 ```
+
+tbc
+
+# Contribution
+
+tbd
