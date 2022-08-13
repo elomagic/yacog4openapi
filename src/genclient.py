@@ -41,7 +41,7 @@ def load_openapi_file(source: str) -> dict:
 
 
 @click.command()
-@click.option("--source", help="OpenAPI source file (File and https are supported)")
+@click.option("--source", default=None, help="OpenAPI source file (File and https are supported)")
 @click.option("--template", default=None, help="Template file to generate an output file")
 @click.option("--output", default=None, help="Name of the generated output file")
 def gen_code(source: str, template: str, output: str):
@@ -50,6 +50,9 @@ def gen_code(source: str, template: str, output: str):
 
     configuration_filename = os.path.join(os.path.dirname(__file__), 'configuration.json')
     load_configuration(configuration_filename)
+
+    if source is None:
+        source = configuration['input']['source']
 
     if template is None:
         template = configuration['template']
