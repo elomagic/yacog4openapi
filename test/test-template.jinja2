@@ -6,3 +6,20 @@
 
 {# Open API identified enumeration types -#}
 {{ enum_types|length }}
+{% for enum in enum_types -%}
+{{ enum.description }}
+{{ enum.name|camelcase }} = ({{ enum.enum|join(', ') }});
+{% endfor %}
+
+{% for dto in dto_types %}
+    {%- if dto.description is defined %}
+        // {{ dto.description }}{% endif %}
+    TM{{ dto.name|camelcase }} = class(TMBaseDto)
+    public
+    {%- for field in dto.fields %}
+        {%- if field.description is defined %}
+            // {{ field.description }}{% endif %}
+        {{ field.name }}: {% if field.ref is defined %}TM{{ field.datatype|camelcase }};{% elif field.type=='array' %}abc{% else %}{{ field.datatype }} {% endif %}
+    {%- endfor %}
+    end;
+{% endfor %}
