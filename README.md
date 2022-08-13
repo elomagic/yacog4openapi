@@ -70,7 +70,7 @@ tbc
 
 **Example**
 ```shell
-src/genclient.py --source=test/openapi.json --template=test/delphi-test.jinja2 --output=test-output/delphi-unit.pas
+src/genclient.py --source=test/openapi.json --template=test/delphi-test-example.jinja2 --output=test-output/delphi-unit.pas
 ```
 
 tbc

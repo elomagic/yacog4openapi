@@ -1,5 +1,5 @@
 {
-    "template": "resources/delphi-unit.jinja2",
+    "template": "resources/delphi-unit-example.jinja2",
     "output": "..\\out\\uRestServiceClient.pas",
     "datatype-map": {
         "number,float":  "Single",
