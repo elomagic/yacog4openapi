@@ -1,9 +1,9 @@
 {
     "input": {
-        "source": "resources/delphi-junit-example.jinja2"
+        "source": "../test/openapi.json"
     },
     "template": "resources/delphi-unit-example.jinja2",
-    "output": "..\\out\\uRestServiceClient.pas",
+    "output": "../out/uRestServiceClient.pas",
     "datatype-map": {
         "number,float":  "Single",
         "number,double": "Double",

@@ -36,10 +36,14 @@ pip install -r requirements.txt
 
 ```json5
 {
+    "input": {
+        // Default OpenAPI definition file
+        "source": "../test/openapi.json"
+    },    
     // Template to use
     "template": "resources/delphi-unit.jinja2",
     // File generated output
-    "output": "..\\out\\uRestServiceClient.pas",
+    "output": "../out/uRestServiceClient.pas",
     // Open API datatype mappings
     "datatype-map": {
         "number,float":  "Single",
