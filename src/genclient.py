@@ -17,7 +17,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 configuration = {}
 
-identified_enums = []
+oa_enums = {}
 identified_dtos = []
 identified_info = {}
 
@@ -85,20 +85,25 @@ def gen_code(source: str, template: str, output: str):
 
 
 def collect_enums(components: dict) -> None:
-    global identified_enums
+    global oa_enums
 
     for key in components:
         dto = components[key]
         if dto['type'] == 'object':
             for field_name in dto['properties']:
                 prop = dto['properties'][field_name]
-                # TODO Check also in items (arrays)
+                # Check also in items (arrays)
                 if 'type' in prop and prop['type'] == 'array':
                     prop = prop['items']
 
                 if 'enum' in prop:
-                    prop['name'] = field_name
-                    identified_enums.append(prop)
+                    oa_enum = {
+                        'name': field_name,
+                        'enum': prop['enum'],
+                        'description': prop['description']
+                    }
+
+                    oa_enums[field_name] = oa_enum
 
 
 def collect_dtos(components: dict) -> None:
@@ -153,7 +158,7 @@ def map_datatype(items: dict) -> str:
 def process_template(template_file: str) -> str:
     global identified_info
     global identified_dtos
-    global identified_enums
+    global oa_enums
 
     template_path = os.path.abspath(os.path.dirname(template_file))
 
@@ -170,7 +175,10 @@ def process_template(template_file: str) -> str:
     template = env.get_template(os.path.basename(template_file))
     print(f'Processing template {template}')
 
-    return template.render(enum_types=identified_enums, dto_types=identified_dtos, info=identified_info)
+    return template.render(
+        enum_types=oa_enums.values(),
+        dto_types=identified_dtos,
+        info=identified_info)
 
 
 if __name__ == '__main__':
