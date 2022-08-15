@@ -36,10 +36,14 @@ pip install -r requirements.txt
 
 ```json5
 {
+    "input": {
+        // Default OpenAPI definition file
+        "source": "../test/openapi.json"
+    },    
     // Template to use
     "template": "resources/delphi-unit.jinja2",
     // File generated output
-    "output": "..\\out\\uRestServiceClient.pas",
+    "output": "../out/uRestServiceClient.pas",
     // Open API datatype mappings
     "datatype-map": {
         "number,float":  "Single",
@@ -68,9 +72,20 @@ tbc
 
 # Using
 
-**Example**
+## Creating output
+
+### Example
+
 ```shell
 src/genclient.py --source=test/openapi.json --template=test/delphi-test-example.jinja2 --output=test-output/delphi-unit.pas
+```
+
+## Supported parameters
+
+To get an overview of the supported parameters, enter the following command in your shell:
+
+```shell
+src/genclient.py --help
 ```
 
 tbc

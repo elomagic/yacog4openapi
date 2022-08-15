@@ -60,7 +60,7 @@ def gen_code(source: str, template: str, output: str):
     if output is None:
         output = configuration['output']
 
-    print(f'Using source file: {source}')
+    print(f'Using OpenAPI file: {source}')
     print(f'Using template file: {template}')
     print(f'Using output file: {output}')
 
